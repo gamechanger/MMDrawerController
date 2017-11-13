@@ -1008,12 +1008,19 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         //
         //The fix is to grab the bounds, and then check again that the child container view has
         //not been created.
-        CGRect childContainerViewFrame = self.view.bounds;
+
         if(_childControllerContainerView == nil){
-            _childControllerContainerView = [[UIView alloc] initWithFrame:childContainerViewFrame];
+            _childControllerContainerView = [[UIView alloc] init];
             [_childControllerContainerView setBackgroundColor:[UIColor clearColor]];
             [_childControllerContainerView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
             [self.view addSubview:_childControllerContainerView];
+            _childControllerContainerView.translatesAutoresizingMaskIntoConstraints = false;
+            [self.view addConstraints:@[
+                                        [_childControllerContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+                                        [_childControllerContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
+                                        [_childControllerContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+                                        [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+                                        ]];
         }
 
     }

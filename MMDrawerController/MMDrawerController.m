@@ -708,7 +708,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 - (void)viewDidLoad {
 	[super viewDidLoad];
     
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+  [self.view setBackgroundColor:[UIColor whiteColor]];
     
 	[self setupGestureRecognizers];
 }
@@ -1009,7 +1009,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
                                         [_childControllerContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
                                         [_childControllerContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
                                         [_childControllerContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
-                                        [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+                                        [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
                                         ]];
         }
 

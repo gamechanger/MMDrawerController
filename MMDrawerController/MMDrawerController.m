@@ -1004,13 +1004,21 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
             [_childControllerContainerView setBackgroundColor:[UIColor clearColor]];
             [_childControllerContainerView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
             [self.view addSubview:_childControllerContainerView];
-            _childControllerContainerView.translatesAutoresizingMaskIntoConstraints = false;
-            [self.view addConstraints:@[
-                                        [_childControllerContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
-                                        [_childControllerContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
-                                        [_childControllerContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
-                                        [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
-                                        ]];
+
+            if (@available(iOS 11, *)) {
+              _childControllerContainerView.translatesAutoresizingMaskIntoConstraints = false;
+              [self.view addConstraints:@[
+                                          [_childControllerContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+                                          [_childControllerContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
+                                          [_childControllerContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+                                          [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+                                          ]];
+            } else {
+              CGRect childContainerViewFrame = self.view.bounds;
+              _childControllerContainerView.frame = childContainerViewFrame;
+            }
+
+
         }
 
     }

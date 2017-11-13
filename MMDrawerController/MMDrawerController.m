@@ -1309,12 +1309,12 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         /** In the event this gets called a lot, we won't update the shadowPath
         unless it needs to be updated (like during rotation) */
         if (centerView.layer.shadowPath == NULL) {
-            centerView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:self.centerContainerView.bounds] CGPath];
+            centerView.layer.shadowPath = [self centerViewShadowPath];
         }
         else{
             CGRect currentPath = CGPathGetPathBoundingBox(centerView.layer.shadowPath);
             if (CGRectEqualToRect(currentPath, centerView.bounds) == NO){
-                centerView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:self.centerContainerView.bounds] CGPath];
+                centerView.layer.shadowPath = [self centerViewShadowPath];
             }
         }
     }
@@ -1325,6 +1325,10 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         centerView.layer.shadowPath = NULL;
         centerView.layer.masksToBounds = YES;
     }
+}
+
+-(CGPathRef)centerViewShadowPath{
+  return [[UIBezierPath bezierPathWithRect:CGRectMake(0, self.shadowRadius * 2, self.shadowRadius * 2, self.centerContainerView.bounds.size.height - self.shadowRadius * 4)] CGPath];
 }
 
 -(NSTimeInterval)animationDurationForAnimationDistance:(CGFloat)distance{

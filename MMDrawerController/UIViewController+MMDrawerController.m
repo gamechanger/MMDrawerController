@@ -38,11 +38,8 @@
 -(CGRect)mm_visibleDrawerFrame{
     if([self isEqual:self.mm_drawerController.leftDrawerViewController] ||
        [self.navigationController isEqual:self.mm_drawerController.leftDrawerViewController]){
-        CGRect rect = self.mm_drawerController.view.bounds;
+        CGRect rect = UIEdgeInsetsInsetRect(self.mm_drawerController.view.bounds, self.mm_drawerController.view.safeAreaInsets);
         rect.size.width = self.mm_drawerController.maximumLeftDrawerWidth;
-        if (self.mm_drawerController.showsStatusBarBackgroundView) {
-            rect.size.height -= 20.0f;
-        }
         return rect;
         
     }

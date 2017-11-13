@@ -708,7 +708,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 - (void)viewDidLoad {
 	[super viewDidLoad];
     
-    [self.view setBackgroundColor:[UIColor blackColor]];
+  [self.view setBackgroundColor:[UIColor whiteColor]];
     
 	[self setupGestureRecognizers];
 }
@@ -943,16 +943,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 -(void)setShowsStatusBarBackgroundView:(BOOL)showsDummyStatusBar{
     if(showsDummyStatusBar!=_showsStatusBarBackgroundView){
         _showsStatusBarBackgroundView = showsDummyStatusBar;
-        CGRect frame = self.childControllerContainerView.frame;
-        if(_showsStatusBarBackgroundView){
-            frame.origin.y = 20;
-            frame.size.height = CGRectGetHeight(self.view.bounds)-20;
-        }
-        else {
-            frame.origin.y = 0;
-            frame.size.height = CGRectGetHeight(self.view.bounds);
-        }
-        [self.childControllerContainerView setFrame:frame];
         [self.dummyStatusBarView setHidden:!showsDummyStatusBar];
     }
 }
@@ -1008,12 +998,27 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         //
         //The fix is to grab the bounds, and then check again that the child container view has
         //not been created.
-        CGRect childContainerViewFrame = self.view.bounds;
+
         if(_childControllerContainerView == nil){
-            _childControllerContainerView = [[UIView alloc] initWithFrame:childContainerViewFrame];
+            _childControllerContainerView = [[UIView alloc] init];
             [_childControllerContainerView setBackgroundColor:[UIColor clearColor]];
             [_childControllerContainerView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
             [self.view addSubview:_childControllerContainerView];
+
+            if (@available(iOS 11, *)) {
+              _childControllerContainerView.translatesAutoresizingMaskIntoConstraints = false;
+              [self.view addConstraints:@[
+                                          [_childControllerContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+                                          [_childControllerContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
+                                          [_childControllerContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+                                          [_childControllerContainerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+                                          ]];
+            } else {
+              CGRect childContainerViewFrame = self.view.bounds;
+              _childControllerContainerView.frame = childContainerViewFrame;
+            }
+
+
         }
 
     }
@@ -1312,12 +1317,12 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         /** In the event this gets called a lot, we won't update the shadowPath
         unless it needs to be updated (like during rotation) */
         if (centerView.layer.shadowPath == NULL) {
-            centerView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:self.centerContainerView.bounds] CGPath];
+            centerView.layer.shadowPath = [self centerViewShadowPath];
         }
         else{
             CGRect currentPath = CGPathGetPathBoundingBox(centerView.layer.shadowPath);
             if (CGRectEqualToRect(currentPath, centerView.bounds) == NO){
-                centerView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:self.centerContainerView.bounds] CGPath];
+                centerView.layer.shadowPath = [self centerViewShadowPath];
             }
         }
     }
@@ -1328,6 +1333,10 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         centerView.layer.shadowPath = NULL;
         centerView.layer.masksToBounds = YES;
     }
+}
+
+-(CGPathRef)centerViewShadowPath{
+  return [[UIBezierPath bezierPathWithRect:CGRectMake(0, self.shadowRadius * 2, self.shadowRadius * 2, self.centerContainerView.bounds.size.height - self.shadowRadius * 4)] CGPath];
 }
 
 -(NSTimeInterval)animationDurationForAnimationDistance:(CGFloat)distance{
